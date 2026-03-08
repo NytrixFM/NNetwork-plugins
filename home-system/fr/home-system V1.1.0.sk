@@ -1,0 +1,68 @@
+# ==============================
+# Please not remove this section.
+# Original version made by NytrixFM
+# Github : https://github.com/NytrixFM/NNetwork-plugins
+# ==============================
+
+command /home <text>:
+    description: Teleporte toi vers ta résidence définie avec /sethome
+    usage: /home <nom de la résidence>
+    permission: nyfm.home
+    executable by: players
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            send "Téléportation vers <gold>%arg-1% <reset>dans 5secondes." to player
+            wait 1 seconds
+            send "4" to player
+            wait 1 seconds
+            send "3" to player
+            wait 1 seconds
+            send "2" to player
+            wait 1 seconds
+            send "1" to player
+            wait 1 seconds
+            teleport player to {home::%uuid of player%::%arg-1%}
+            send "Vous avez bien été télporté vers <gold>%arg-1% <reset>"
+        else:
+            send "<red>Erreur : Le home n'existe pas." to player
+
+command /sethome <text>:
+    description: créér une résidence. Téléporte toi a celle ci avec /home et supprime la avec /delhome
+    usage: /sethome <nom de la résidence>
+    permission: nyfm.sethome
+    executable by: players
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            send "<red> Erreur : La résidance <gold>%arg-1% <reset> existe déja." to player
+        else:
+            set {home::%uuid of player%::%arg-1%} to player's location
+            add %arg-1% to {homeliste::%uuid of player%}
+            send "La résidance <gold>%arg-1% <reset> a bien été défine a la position %location of player%" to player
+
+command /delhome <text>:
+    description: supprimer une résidance.
+    usage: /delhome <nom de la résidence>
+    permission: nyfm.delhome
+    executable by: player
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            delete {home::%uuid of player%::%arg-1%}
+            send "La résidence <gold>%arg-1% <reset> a bien été surprimée" to player
+        else:
+            send "La résidence <gold>%arg-1% <reset> n'existe pas" to player
+
+command /module-info-homes:
+    description: informations du module hom
+    permission: nyfm.homeinfo
+    executable by: player
+    trigger:
+        send "<gold>Version :<reset> V1.1.0 " to player
+
+command /homes:
+    description: voir tes homes
+    permission: nyfm.homes
+    executable by: player
+    trigger:
+        loop {homeliste::%uuid of player%::*}:
+            send loop-value  to player
+            send "la commande work" to player
