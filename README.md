@@ -5,4 +5,4 @@ All the .sk files of my server
 > The server is in dev so, i can do a lot of errors...
 
 ## Files : 
-**Home system : **  https://github.com/NytrixFM/NNetwork-plugins/tree/main/home-system
+**Home system :**  https://github.com/NytrixFM/NNetwork-plugins/tree/main/home-system
