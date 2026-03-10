@@ -1,0 +1,69 @@
+# ==============================
+# Please not remove this section.
+# Original version made by NytrixFM
+# Github : https://github.com/NytrixFM/NNetwork-plugins
+# Version V.1.1 English (if there is any error in the translation please make an issue here:  https://github.com/NytrixFM/NNetwork-plugins/issues and name it : Home sys en error. Tanks !
+# ==============================
+command /home <text>:
+    description: Teleport youreself with /home
+    usage: /home <name of the home>
+    permission: nyfm.home
+    executable by: players
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            send "Teleporting to <gold>%arg-1% <reset>in 5 seconds." to player
+            wait 1 seconds
+            send "4" to player
+            wait 1 seconds
+            send "3" to player
+            wait 1 seconds
+            send "2" to player
+            wait 1 seconds
+            send "1" to player
+            wait 1 seconds
+            teleport player to {home::%uuid of player%::%arg-1%}
+            send "You were been teleported to <gold>%arg-1% <reset>"
+        else:
+            send "<red>Error : this home doen't exist." to player
+
+command /sethome <text>:
+    description: Create an home.
+    usage: /sethome <name of the home>
+    permission: nyfm.sethome
+    executable by: players
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            send "<red> Error : The home <gold>%arg-1% <reset> arealdy exist." to player
+        else:
+            set {home::%uuid of player%::%arg-1%} to player's location
+            add "%arg-1%" to {homeliste::%uuid of player%::*}
+            send "The home <gold>%arg-1% <reset> has been created at the position %location of player%" to player
+
+command /delhome <text>:
+    description: Delete an home.
+    usage: /delhome <name of the home>
+    permission: nyfm.delhome
+    executable by: player
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            delete {home::%uuid of player%::%arg-1%}
+            remove "%arg-1%" from {homeliste::%uuid of player%::*}
+            send "The home <gold>%arg-1% <reset> has been deleted" to player
+        else:
+            send "The home <gold>%arg-1% <reset> doesn't exist" to player
+
+command /module-info-homes:
+    description: informations du module hom
+    permission: nyfm.homeinfo
+    executable by: player
+    trigger:
+        send "<gold>Version :<reset> V1.1.1 " to player
+
+command /homes:
+    description: voir tes homes
+    permission: nyfm.homes
+    executable by: player
+    trigger:
+        send "<gold>This is your home list :<reset>" to player
+        loop {homeliste::%uuid of player%::*}:
+            send loop-value  to player
