@@ -1,3 +1,3 @@
-**French version :** https://github.com/NytrixFM/NNetwork-plugins/new/main/home-system/fr
+[**French version** ](https://github.com/NytrixFM/NNetwork-plugins/tree/main/home-system/fr)
 
-**English version :** https://github.com/NytrixFM/NNetwork-plugins/new/main/home-system/en
+[**English version**](https://github.com/NytrixFM/NNetwork-plugins/tree/main/home-system/en)
