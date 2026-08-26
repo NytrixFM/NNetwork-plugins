@@ -1,0 +1,111 @@
+command /home <text>:
+    description: Teleporte toi vers ta résidence définie avec /sethome
+    usage: /home <nom de la résidence>
+    permission: nyfm.homes.home
+    executable by: players
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            send "Téléportation vers <gold>%arg-1% <reset>dans 5secondes." to player
+            wait 1 seconds
+            send "4" to player
+            wait 1 seconds
+            send "3" to player
+            wait 1 seconds
+            send "2" to player
+            wait 1 seconds
+            send "1" to player
+            wait 1 seconds
+            teleport player to {home::%uuid of player%::%arg-1%}
+            send "Vous avez bien été télporté vers <gold>%arg-1% <reset>"
+        else:
+            send "<red>Erreur : Le home n'existe pas." to player
+
+command /sethome <text>:
+    description: créér une résidence. Téléporte toi a celle ci avec /home et supprime la avec /delhome
+    usage: /sethome <nom de la résidence>
+    permission: nyfm.homes.sethome
+    executable by: players
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            send "<red> Erreur : La résidance <gold>%arg-1% <reset> existe déja." to player
+        else:
+            set {home::%uuid of player%::%arg-1%} to player's location
+            add "%arg-1%" to {homeliste::%uuid of player%::*}
+            send "La résidance <gold>%arg-1% <reset> a bien été défine a la position %location of player%" to player
+
+command /delhome <text>:
+    description: supprimer une résidance.
+    usage: /delhome <nom de la résidence>
+    permission: nyfm.homes.delhome
+    executable by: player
+    trigger:
+        if {home::%uuid of player%::%arg-1%} is set:
+            delete {home::%uuid of player%::%arg-1%}
+            remove "%arg-1%" from {homeliste::%uuid of player%::*}
+            send "La résidence <gold>%arg-1% <reset> a bien été surprimée" to player
+        else:
+            send "La résidence <gold>%arg-1% <reset> n'existe pas" to player
+
+command /module-info-homes:
+    description: informations du module hom
+    permission: nyfm.home.info
+    executable by: player
+    trigger:
+        send "<gold>Version :<reset> V1.2.0 " to player
+
+command /homes:
+    description: voir tes homes
+    permission: nyfm.homes.list
+    executable by: player
+    trigger:
+        send "<gold>Voici la liste de tes homes :<reset>" to player
+        loop {homeliste::%uuid of player%::*}:
+            send loop-value to player
+
+command /guihomes:
+    description: Te téléporter a tes homes via une interface 
+    permission: nyfm.homes.gui
+    executable by: player
+    trigger:
+        set {_menu} to a new chest inventory named "<white> Home menu -<reset> <gold>%player%"
+        set {_i} to 0
+        loop {homeliste::%uuid of player%::*}:
+            set slot {_i} of {_menu} to ender_pearl named "Te téléporter a %loop-value%"
+            add 1 to {_i}
+
+command /adm-homes <offline player>:
+    executable by: player
+    permission: nyfm.adm.homes
+    permission message: "<red>Commande inconnue."
+    trigger:
+        if arg-1 is not set:
+            send "<red>Usage : /adm-homes <joueur>" to player
+            stop
+        set {_uuid} to uuid of arg-1
+        if {homeliste::%{_uuid}%::*} is not set:
+            send "<red>Ce joueur n'a aucun home enregistré." to player
+            stop
+        send "<gold>Voici la liste des homes de %name of arg-1% :<reset>" to player
+        loop {homeliste::%{_uuid}%::*}:
+            send "<yellow>- %loop-value%" to player
+
+command /adm-home <offline player> <text>:
+    executable by: player
+    permission: nyfm.adm.home
+    permission message: "<red>Commande inconnue."
+    trigger:
+        if arg-1 is not set:
+            send "<red>Usage : /adm-home <joueur> <home>" to player
+            stop
+        if arg-2 is not set:
+            send "<red>Usage : /adm-home <joueur> <home>" to player
+            stop
+
+        set {_uuid} to uuid of arg-1
+
+        if {home::%{_uuid}%::%arg-2%} is not set:
+            send "<red>Ce joueur n'a pas de home nommé '<white>%arg-2%<red>'." to player
+            stop
+
+        teleport player to {home::%{_uuid}%::%arg-2%}
+        send "<green>Téléporté au home <white>%arg-2%<green> de <white>%name of arg-1%<green>." to player
